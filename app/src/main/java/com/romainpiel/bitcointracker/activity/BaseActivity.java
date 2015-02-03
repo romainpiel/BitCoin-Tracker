@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.romainpiel.bitcointracker.BitCoinApplication;
 import com.romainpiel.bitcointracker.R;
 
 public abstract class BaseActivity extends ActionBarActivity {
@@ -24,6 +25,10 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     protected abstract int getLayoutResource();
+
+    public void inject(Object object) {
+        ((BitCoinApplication) super.getApplication()).inject(object);
+    }
 
     protected void setActionBarIcon(@Nullable Drawable icon) {
         toolbar.setNavigationIcon(icon);

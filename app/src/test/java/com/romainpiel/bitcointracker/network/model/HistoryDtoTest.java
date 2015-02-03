@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import retrofit.converter.ConversionException;
 import retrofit.mime.TypedString;
@@ -22,7 +22,7 @@ public class HistoryDtoTest {
         HistoryDto historyDto = (HistoryDto) jacksonConverter.fromBody(new TypedString("{\"bpi\":{\"2015-01-03\":182.5614,\"2015-01-04\":172.7237}}"), HistoryDto.class);
 
         HistoryDto expectedHistoryDto = new HistoryDto();
-        expectedHistoryDto.bpi = new HashMap<>();
+        expectedHistoryDto.bpi = new LinkedHashMap<>();
         expectedHistoryDto.bpi.put("2015-01-03", 182.5614);
         expectedHistoryDto.bpi.put("2015-01-04", 172.7237);
 

@@ -1,6 +1,7 @@
 package com.romainpiel.bitcointracker;
 
 import com.romainpiel.bitcointracker.network.BPIService;
+import com.romainpiel.bitcointracker.network.BPIServiceClient;
 import com.romainpiel.bitcointracker.network.JacksonConverter;
 
 import javax.inject.Singleton;
@@ -27,5 +28,10 @@ public class BitCoinApplicationModule {
     @Provides
     public BPIService provideBPIService(RestAdapter restAdapter) {
         return restAdapter.create(BPIService.class);
+    }
+
+    @Provides
+    public BPIServiceClient provideBPIServiceClient(BPIService bpiService) {
+        return new BPIServiceClient(bpiService);
     }
 }

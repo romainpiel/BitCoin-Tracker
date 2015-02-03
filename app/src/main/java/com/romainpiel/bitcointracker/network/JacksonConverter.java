@@ -1,6 +1,7 @@
 package com.romainpiel.bitcointracker.network;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -21,11 +22,8 @@ public class JacksonConverter implements Converter {
     private final ObjectMapper objectMapper;
 
     public JacksonConverter() {
-        this(new ObjectMapper());
-    }
-
-    public JacksonConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     @Override

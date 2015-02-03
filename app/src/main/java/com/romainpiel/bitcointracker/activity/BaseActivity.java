@@ -1,10 +1,12 @@
-package com.romainpiel.bitcointracker;
+package com.romainpiel.bitcointracker.activity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.romainpiel.bitcointracker.R;
 
 public abstract class BaseActivity extends ActionBarActivity {
 

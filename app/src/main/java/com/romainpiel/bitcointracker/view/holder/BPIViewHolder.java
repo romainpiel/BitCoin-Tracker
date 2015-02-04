@@ -1,5 +1,6 @@
 package com.romainpiel.bitcointracker.view.holder;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,9 +11,11 @@ import java.text.SimpleDateFormat;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
-public class BPIViewHolder extends BindableViewHolder<BPI> {
+public class BPIViewHolder extends RecyclerView.ViewHolder {
 
+    @Optional
     @InjectView(R.id.date)
     TextView date;
 
@@ -30,20 +33,24 @@ public class BPIViewHolder extends BindableViewHolder<BPI> {
         ButterKnife.inject(this, itemView);
     }
 
-    @Override
     public void bind(BPI item) {
-        date.setText(simpleDateFormat.format(item.getDate()));
+        if (date != null) {
+            date.setText(simpleDateFormat.format(item.getDate()));
+        }
         close.setText(String.format("$%.2f", item.getClose()));
 
         int changeTextColorRes = R.color.textColorSecondary;
-        String changeText = String.format("%.2f%%", item.getChange() * 100);
+        String changeText = "";
         String changeArrow = "";
-        if (item.getChange() > 0) {
-            changeArrow = " ▲";
-            changeTextColorRes = R.color.bpiChangeIncrease;
-        } else if (item.getChange() < 0) {
-            changeArrow = " ▼";
-            changeTextColorRes = R.color.bpiChangeDecrease;
+        if (item.getChange() != null) {
+            changeText = String.format("%.2f%%", item.getChange() * 100);
+            if (item.getChange() > 0) {
+                changeArrow = " ▲";
+                changeTextColorRes = R.color.bpiChangeIncrease;
+            } else if (item.getChange() < 0) {
+                changeArrow = " ▼";
+                changeTextColorRes = R.color.bpiChangeDecrease;
+            }
         }
         change.setText(changeText + changeArrow);
         change.setTextColor(change.getResources().getColor(changeTextColorRes));

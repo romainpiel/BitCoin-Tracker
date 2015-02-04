@@ -127,6 +127,9 @@ public class HistoryListFragment extends BaseFragment {
                     @Override
                     public void onNext(BPI bpi) {
                         Log.d("blah", "current next ");
+                        if (adapter.getItems().size() > 0) {
+                            bpi.setChange(adapter.getItems().get(0));
+                        }
                         adapter.setCurrent(bpi);
                         adapter.notifyDataSetChanged();
                     }
@@ -152,6 +155,9 @@ public class HistoryListFragment extends BaseFragment {
                     @Override
                     public void onNext(List<BPI> bpis) {
                         Log.d("blah", String.valueOf(bpis.size()));
+                        if (bpis.size() > 0 && adapter.getCurrent() != null) {
+                            adapter.getCurrent().setChange(bpis.get(0));
+                        }
                         adapter.setItems(bpis);
                         adapter.notifyDataSetChanged();
                     }

@@ -18,4 +18,13 @@
         android:fontFamily="sans-serif-light"
         tools:text="$221.99"/>
 
+    <TextView
+        android:id="@+id/change"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="?android:attr/textColorSecondary"
+        tools:text="-4.46% ▼"/>
+
 </LinearLayout>

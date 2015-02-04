@@ -44,7 +44,7 @@ public class BPIServiceClient {
                             @Override
                             public BPI call(BPI bpi, BPI bpi2) {
                                 if (bpi.getClose() != 0) {
-                                    bpi2.setChange((bpi2.getClose() - bpi.getClose()) / bpi.getClose());
+                                    bpi2.setChange(bpi);
                                 }
                                 return bpi2;
                             }

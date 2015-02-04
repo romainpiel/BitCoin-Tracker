@@ -10,14 +10,12 @@ import android.view.ViewGroup;
 import com.romainpiel.bitcointracker.R;
 import com.romainpiel.bitcointracker.model.BPI;
 import com.romainpiel.bitcointracker.view.holder.BPIViewHolder;
-import com.romainpiel.bitcointracker.view.holder.BindableViewHolder;
-import com.romainpiel.bitcointracker.view.holder.CurrentBPIViewHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryAdapter extends RecyclerView.Adapter<BindableViewHolder<BPI>> {
+public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
@@ -38,8 +36,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<BindableViewHolder<BPI>
         return state;
     }
 
+    public BPI getCurrent() {
+        return this.state.current;
+    }
+
     public void setCurrent(BPI current) {
         this.state.current = current;
+    }
+
+    public List<BPI> getItems() {
+        return this.state.items;
     }
 
     public void setItems(List<BPI> items) {
@@ -48,23 +54,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<BindableViewHolder<BPI>
     }
 
     @Override
-    public BindableViewHolder<BPI> onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        BindableViewHolder<BPI> viewHolder = null;
+    public BPIViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        View view = null;
         switch (viewType) {
             case TYPE_HEADER:
-                View headerView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bpi_current, viewGroup, false);
-                viewHolder = new CurrentBPIViewHolder(headerView);
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bpi_current, viewGroup, false);
                 break;
             case TYPE_ITEM:
-                View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bpi, viewGroup, false);
-                viewHolder = new BPIViewHolder(itemView, simpleDateFormat);
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bpi, viewGroup, false);
                 break;
         }
-        return viewHolder;
+        return new BPIViewHolder(view, simpleDateFormat);
     }
 
     @Override
-    public void onBindViewHolder(BindableViewHolder<BPI> viewHolder, int position) {
+    public void onBindViewHolder(BPIViewHolder viewHolder, int position) {
         int viewType = getItemViewType(position);
         BPI item = null;
         switch (viewType) {

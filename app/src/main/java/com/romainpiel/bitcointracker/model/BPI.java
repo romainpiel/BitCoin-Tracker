@@ -44,6 +44,10 @@ public class BPI implements Parcelable {
         this.change = change;
     }
 
+    public void setChange(BPI previous) {
+        setChange((close - previous.close) / previous.close);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

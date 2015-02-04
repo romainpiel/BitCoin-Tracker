@@ -1,5 +1,7 @@
 package com.romainpiel.bitcointracker.view.adapter;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +17,25 @@ import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
 
-    private List<BPI> items;
+    private State state;
     private SimpleDateFormat simpleDateFormat;
 
     public HistoryAdapter() {
-        this.items = new ArrayList<>();
+        this(new State());
+    }
+
+    public HistoryAdapter(State state) {
+        this.state = state;
         this.simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     }
 
+    public State getState() {
+        return state;
+    }
+
     public void setItems(List<BPI> items) {
-        this.items.clear();
-        this.items.addAll(items);
+        this.state.items.clear();
+        this.state.items.addAll(items);
     }
 
     @Override
@@ -36,11 +46,44 @@ public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
 
     @Override
     public void onBindViewHolder(BPIViewHolder viewHolder, int i) {
-        viewHolder.bind(items.get(i));
+        viewHolder.bind(state.items.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return state.items.size();
+    }
+
+    public static class State implements Parcelable {
+
+        private ArrayList<BPI> items;
+
+        public State() {
+            this.items = new ArrayList<>();
+        }
+
+        private State(Parcel in) {
+            items = in.createTypedArrayList(BPI.CREATOR);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeTypedList(items);
+        }
+
+        public static final Creator<State> CREATOR = new Creator<State>() {
+            public State createFromParcel(Parcel source) {
+                return new State(source);
+            }
+
+            public State[] newArray(int size) {
+                return new State[size];
+            }
+        };
     }
 }

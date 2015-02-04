@@ -1,8 +1,11 @@
 package com.romainpiel.bitcointracker.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
-public class BPI {
+public class BPI implements Parcelable {
 
     private Date date;
     private Double close;
@@ -16,6 +19,13 @@ public class BPI {
         this.date = date;
         this.close = close;
         this.change = change;
+    }
+
+    private BPI(Parcel in) {
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.close = (Double) in.readValue(Double.class.getClassLoader());
+        this.change = (Float) in.readValue(Float.class.getClassLoader());
     }
 
     public Date getDate() {
@@ -55,4 +65,26 @@ public class BPI {
         result = 31 * result + (change != null ? change.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(date != null ? date.getTime() : -1);
+        dest.writeValue(this.close);
+        dest.writeValue(this.change);
+    }
+
+    public static final Parcelable.Creator<BPI> CREATOR = new Parcelable.Creator<BPI>() {
+        public BPI createFromParcel(Parcel source) {
+            return new BPI(source);
+        }
+
+        public BPI[] newArray(int size) {
+            return new BPI[size];
+        }
+    };
 }

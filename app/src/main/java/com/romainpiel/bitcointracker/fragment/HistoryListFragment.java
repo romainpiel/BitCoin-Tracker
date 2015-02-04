@@ -26,18 +26,20 @@ import rx.subscriptions.CompositeSubscription;
 
 public class HistoryListFragment extends BaseFragment {
 
+    private static final String STATE_HISTORY_ADAPTER = "state_history_adapter";
+
     @Inject
     BPIServiceClient bpiServiceClient;
 
+    private RecyclerView recyclerView;
     private CompositeSubscription compositeSubscription;
     private HistoryAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_history_list, container, false);
+        recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_history_list, container, false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new HistoryAdapter();
         recyclerView.setAdapter(adapter);
         return recyclerView;
     }
@@ -48,7 +50,23 @@ public class HistoryListFragment extends BaseFragment {
         inject(this);
         compositeSubscription = new CompositeSubscription();
 
-        fetchHistory();
+        if (savedInstanceState == null) {
+            adapter = new HistoryAdapter();
+        } else {
+            HistoryAdapter.State adapterState = savedInstanceState.getParcelable(STATE_HISTORY_ADAPTER);
+            adapter = new HistoryAdapter(adapterState);
+        }
+        recyclerView.setAdapter(adapter);
+
+        if (savedInstanceState == null) {
+            fetchHistory();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(STATE_HISTORY_ADAPTER, adapter.getState());
     }
 
     @Override

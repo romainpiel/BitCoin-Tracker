@@ -1,5 +1,6 @@
 package com.romainpiel.bitcointracker;
 
+import com.romainpiel.bitcointracker.fragment.HistoryListFragment;
 import com.romainpiel.bitcointracker.network.BPIService;
 import com.romainpiel.bitcointracker.network.BPIServiceClient;
 import com.romainpiel.bitcointracker.network.JacksonConverter;
@@ -11,6 +12,7 @@ import dagger.Provides;
 import retrofit.RestAdapter;
 
 @Module(
+        injects = HistoryListFragment.class,
         complete = false,
         library = true
 )

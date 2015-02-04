@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal"
+    android:paddingRight="@dimen/activity_horizontal"
+    android:paddingTop="@dimen/activity_vertical"
+    android:paddingBottom="@dimen/activity_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="?android:attr/textColorSecondary"
+        tools:text="2015-02-03"/>
+
+    <TextView
+        android:id="@+id/close"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="?android:attr/textColorSecondary"
+        tools:text="$226.96"/>
+
+    <TextView
+        android:id="@+id/change"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="?android:attr/textColorSecondary"
+        tools:text="-4.46% ▼"/>
+
+</LinearLayout>

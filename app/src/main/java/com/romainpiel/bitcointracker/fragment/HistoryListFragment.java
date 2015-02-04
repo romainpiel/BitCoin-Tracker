@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -40,6 +39,7 @@ public class HistoryListFragment extends BaseFragment {
 
     private RecyclerView recyclerView;
     private CompositeSubscription compositeSubscription;
+    private Subscription pollingWorker;
     private HistoryAdapter adapter;
 
     @Nullable
@@ -67,7 +67,6 @@ public class HistoryListFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
 
         if (savedInstanceState == null) {
-            fetchCurrentPeriodically();
             fetchHistory();
         }
     }
@@ -79,24 +78,36 @@ public class HistoryListFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        subscribePolling();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unsubscribePolling();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         compositeSubscription.unsubscribe();
     }
 
-    private void fetchCurrentPeriodically() {
-        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(final Subscriber<? super String> observer) {
-                Schedulers.newThread().createWorker() //
-                        .schedulePeriodically(new Action0() {
-                            @Override
-                            public void call() {
-                                fetchCurrent();
-                            }
-                        }, INITIAL_DELAY, POLLING_INTERVAL, TimeUnit.SECONDS);
-            }
-        }).subscribe());
+    private void subscribePolling() {
+        pollingWorker = Schedulers.newThread().createWorker()
+                .schedulePeriodically(new Action0() {
+                    @Override
+                    public void call() {
+                        fetchCurrent();
+                    }
+                }, INITIAL_DELAY, POLLING_INTERVAL, TimeUnit.SECONDS);
+        compositeSubscription.add(pollingWorker);
+    }
+
+    private void unsubscribePolling() {
+        compositeSubscription.remove(pollingWorker);
     }
 
     private void fetchCurrent() {

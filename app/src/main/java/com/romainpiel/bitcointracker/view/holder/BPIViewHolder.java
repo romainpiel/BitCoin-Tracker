@@ -35,18 +35,15 @@ public class BPIViewHolder extends RecyclerView.ViewHolder {
         date.setText(simpleDateFormat.format(bpi.getDate()));
         close.setText(String.format("$%.2f", bpi.getClose()));
 
-        String changeText = "";
-        String changeArrow = "";
         int changeTextColorRes = R.color.textColorSecondary;
-        if (bpi.getChange() != null) {
-            changeText = String.format("%.2f%%", bpi.getChange() * 100);
-            if (bpi.getChange() > 0) {
-                changeArrow = " ▲";
-                changeTextColorRes = R.color.bpiChangeIncrease;
-            } else if (bpi.getChange() < 0) {
-                changeArrow = " ▼";
-                changeTextColorRes = R.color.bpiChangeDecrease;
-            }
+        String changeText = String.format("%.2f%%", bpi.getChange() * 100);
+        String changeArrow = "";
+        if (bpi.getChange() > 0) {
+            changeArrow = " ▲";
+            changeTextColorRes = R.color.bpiChangeIncrease;
+        } else if (bpi.getChange() < 0) {
+            changeArrow = " ▼";
+            changeTextColorRes = R.color.bpiChangeDecrease;
         }
         change.setText(changeText + changeArrow);
         change.setTextColor(change.getResources().getColor(changeTextColorRes));

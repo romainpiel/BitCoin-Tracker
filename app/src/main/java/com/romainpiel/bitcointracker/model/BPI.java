@@ -8,14 +8,14 @@ import java.util.Date;
 public class BPI implements Parcelable {
 
     private Date date;
-    private Double close;
+    private Float close;
     private Float change;
 
-    public BPI(Date date, Double close) {
+    public BPI(Date date, Float close) {
         this(date, close, null);
     }
 
-    public BPI(Date date, Double close, Float change) {
+    public BPI(Date date, Float close, Float change) {
         this.date = date;
         this.close = close;
         this.change = change;
@@ -24,7 +24,7 @@ public class BPI implements Parcelable {
     private BPI(Parcel in) {
         long tmpDate = in.readLong();
         this.date = tmpDate == -1 ? null : new Date(tmpDate);
-        this.close = (Double) in.readValue(Double.class.getClassLoader());
+        this.close = (Float) in.readValue(Float.class.getClassLoader());
         this.change = (Float) in.readValue(Float.class.getClassLoader());
     }
 
@@ -32,7 +32,7 @@ public class BPI implements Parcelable {
         return date;
     }
 
-    public Double getClose() {
+    public Float getClose() {
         return close;
     }
 
@@ -78,7 +78,7 @@ public class BPI implements Parcelable {
         dest.writeValue(this.change);
     }
 
-    public static final Parcelable.Creator<BPI> CREATOR = new Parcelable.Creator<BPI>() {
+    public static final Creator<BPI> CREATOR = new Creator<BPI>() {
         public BPI createFromParcel(Parcel source) {
             return new BPI(source);
         }

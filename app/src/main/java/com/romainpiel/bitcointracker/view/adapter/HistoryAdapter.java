@@ -10,12 +10,17 @@ import android.view.ViewGroup;
 import com.romainpiel.bitcointracker.R;
 import com.romainpiel.bitcointracker.model.BPI;
 import com.romainpiel.bitcointracker.view.holder.BPIViewHolder;
+import com.romainpiel.bitcointracker.view.holder.BindableViewHolder;
+import com.romainpiel.bitcointracker.view.holder.CurrentBPIViewHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
+public class HistoryAdapter extends RecyclerView.Adapter<BindableViewHolder<BPI>> {
+
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_ITEM = 1;
 
     private State state;
     private SimpleDateFormat simpleDateFormat;
@@ -33,29 +38,66 @@ public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
         return state;
     }
 
+    public void setCurrent(BPI current) {
+        this.state.current = current;
+    }
+
     public void setItems(List<BPI> items) {
         this.state.items.clear();
         this.state.items.addAll(items);
     }
 
     @Override
-    public BPIViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bpi, viewGroup, false);
-        return new BPIViewHolder(itemView, simpleDateFormat);
+    public BindableViewHolder<BPI> onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        BindableViewHolder<BPI> viewHolder = null;
+        switch (viewType) {
+            case TYPE_HEADER:
+                View headerView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bpi_current, viewGroup, false);
+                viewHolder = new CurrentBPIViewHolder(headerView);
+                break;
+            case TYPE_ITEM:
+                View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bpi, viewGroup, false);
+                viewHolder = new BPIViewHolder(itemView, simpleDateFormat);
+                break;
+        }
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(BPIViewHolder viewHolder, int i) {
-        viewHolder.bind(state.items.get(i));
+    public void onBindViewHolder(BindableViewHolder<BPI> viewHolder, int position) {
+        int viewType = getItemViewType(position);
+        BPI item = null;
+        switch (viewType) {
+            case TYPE_HEADER:
+                item = state.current;
+                break;
+            case TYPE_ITEM:
+                item = state.items.get(position - (hasHeader() ? 1 : 0));
+                break;
+        }
+
+        if (item != null) {
+            viewHolder.bind(item);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return state.items.size();
+        return state.items.size() + (hasHeader() ? 1 : 0);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == 0 && hasHeader() ? TYPE_HEADER : TYPE_ITEM;
+    }
+
+    private boolean hasHeader() {
+        return state.current != null;
     }
 
     public static class State implements Parcelable {
 
+        private BPI current;
         private ArrayList<BPI> items;
 
         public State() {
@@ -63,6 +105,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
         }
 
         private State(Parcel in) {
+            current = in.readParcelable(BPI.class.getClassLoader());
             items = in.createTypedArrayList(BPI.CREATOR);
         }
 
@@ -73,6 +116,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeParcelable(current, 0);
             dest.writeTypedList(items);
         }
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal"
+    android:paddingRight="@dimen/activity_horizontal"
+    android:paddingTop="@dimen/activity_vertical"
+    android:paddingBottom="@dimen/activity_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="70sp"
+        android:fontFamily="sans-serif-light"
+        tools:text="$221.99"/>
+
+</LinearLayout>

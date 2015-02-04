@@ -32,9 +32,9 @@ public class BPIServiceClientTest {
 
     private static HistoryDto newHistory(int max) throws ParseException {
         HistoryDto historyDto = new HistoryDto();
-        LinkedHashMap<Date, Double> bpi = new LinkedHashMap<>();
+        LinkedHashMap<Date, Float> bpi = new LinkedHashMap<>();
         for (int i = 1; i <= max; i++) {
-            bpi.put(newDate(i), (double) i);
+            bpi.put(newDate(i), (float) i);
         }
         historyDto.setBpi(bpi);
         return historyDto;
@@ -53,8 +53,8 @@ public class BPIServiceClientTest {
 
         List<List<BPI>> expectedResults = new ArrayList<>();
         expectedResults.add(Lists.newArrayList(
-                new BPI(newDate(3), 3d, 1f/2f),
-                new BPI(newDate(2), 2d, 1f)
+                new BPI(newDate(3), 3f, 1f/2f),
+                new BPI(newDate(2), 2f, 1f)
         ));
         subscriber.assertReceivedOnNext(expectedResults);
         subscriber.assertTerminalEvent();

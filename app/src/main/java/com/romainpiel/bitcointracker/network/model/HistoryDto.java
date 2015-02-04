@@ -9,13 +9,13 @@ import java.util.LinkedHashMap;
 public class HistoryDto {
 
     @JsonProperty
-    LinkedHashMap<Date, Double> bpi;
+    LinkedHashMap<Date, Float> bpi;
 
-    public HashMap<Date, Double> getBpi() {
+    public HashMap<Date, Float> getBpi() {
         return bpi;
     }
 
-    public void setBpi(LinkedHashMap<Date, Double> bpi) {
+    public void setBpi(LinkedHashMap<Date, Float> bpi) {
         this.bpi = bpi;
     }
 }

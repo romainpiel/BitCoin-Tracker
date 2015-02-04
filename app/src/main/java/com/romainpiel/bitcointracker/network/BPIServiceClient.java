@@ -2,6 +2,7 @@ package com.romainpiel.bitcointracker.network;
 
 import com.romainpiel.bitcointracker.model.BPI;
 import com.romainpiel.bitcointracker.network.model.HistoryDto;
+import com.romainpiel.bitcointracker.network.model.PriceDto;
 
 import java.util.Date;
 import java.util.List;
@@ -19,14 +20,23 @@ public class BPIServiceClient {
         this.bpiService = bpiService;
     }
 
+    public Observable<BPI> getCurrentUSDPrice() {
+        return bpiService.currentPrice().map(new Func1<PriceDto, BPI>() {
+            @Override
+            public BPI call(PriceDto priceDto) {
+                return new BPI(priceDto.getTime().getUpdatedISO(), priceDto.getBpi().get("USD").getRate());
+            }
+        });
+    }
+
     public Observable<List<BPI>> getHistory() {
         return bpiService.getHistory().flatMap(new Func1<HistoryDto, Observable<List<BPI>>>() {
             @Override
             public Observable<List<BPI>> call(HistoryDto historyDto) {
                 return Observable.from(historyDto.getBpi().entrySet())
-                        .map(new Func1<Map.Entry<Date, Double>, BPI>() {
+                        .map(new Func1<Map.Entry<Date, Float>, BPI>() {
                             @Override
-                            public BPI call(Map.Entry<Date, Double> entry) {
+                            public BPI call(Map.Entry<Date, Float> entry) {
                                 return new BPI(entry.getKey(), entry.getValue());
                             }
                         })
@@ -34,7 +44,7 @@ public class BPIServiceClient {
                             @Override
                             public BPI call(BPI bpi, BPI bpi2) {
                                 if (bpi.getClose() != 0) {
-                                    bpi2.setChange((bpi2.getClose().floatValue() - bpi.getClose().floatValue()) / bpi.getClose().floatValue());
+                                    bpi2.setChange((bpi2.getClose() - bpi.getClose()) / bpi.getClose());
                                 }
                                 return bpi2;
                             }

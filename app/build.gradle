@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId "com.romainpiel.bitcointracker"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"

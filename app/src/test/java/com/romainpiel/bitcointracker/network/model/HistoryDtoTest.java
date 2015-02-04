@@ -26,8 +26,8 @@ public class HistoryDtoTest {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         HistoryDto expectedHistoryDto = new HistoryDto();
         expectedHistoryDto.bpi = new LinkedHashMap<>();
-        expectedHistoryDto.bpi.put(dateFormat.parse("2015-01-03"), 182.5614);
-        expectedHistoryDto.bpi.put(dateFormat.parse("2015-01-04"), 172.7237);
+        expectedHistoryDto.bpi.put(dateFormat.parse("2015-01-03"), 182.5614f);
+        expectedHistoryDto.bpi.put(dateFormat.parse("2015-01-04"), 172.7237f);
 
         assertThat(historyDto.bpi).isEqualTo(expectedHistoryDto.bpi);
     }

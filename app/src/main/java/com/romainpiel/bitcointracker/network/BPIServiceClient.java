@@ -32,8 +32,8 @@ public class BPIServiceClient {
                         .scan(new Func2<BPI, BPI, BPI>() {
                             @Override
                             public BPI call(BPI bpi, BPI bpi2) {
-                                if (bpi.getValue() != 0) {
-                                    bpi2.setChange((bpi2.getValue().floatValue() - bpi.getValue().floatValue()) / bpi.getValue().floatValue());
+                                if (bpi.getClose() != 0) {
+                                    bpi2.setChange((bpi2.getClose().floatValue() - bpi.getClose().floatValue()) / bpi.getClose().floatValue());
                                 }
                                 return bpi2;
                             }

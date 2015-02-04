@@ -20,20 +20,24 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 public class BPIServiceClientTest {
 
-    private static HistoryDto newHistory(int size) {
+    private static HistoryDto newHistory(int max) {
         HistoryDto historyDto = new HistoryDto();
         LinkedHashMap<String, Double> bpi = new LinkedHashMap<>();
-        for (int i = 0; i < size; i++) {
+        for (int i = 1; i <= max; i++) {
             bpi.put(String.format("date %d", i), (double) i);
         }
         historyDto.setBpi(bpi);
         return historyDto;
     }
 
-    private static List<BPI> newBPIList(int size) {
+    private static List<BPI> newBPIList(int max) {
         List<BPI> list = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            list.add(new BPI(String.format("date %d", i), (double) i));
+        for (int i = 1; i <= max; i++) {
+            BPI bpi = new BPI(String.format("date %d", i), (double) i);
+            if (i > 1) {
+                bpi.setChange(((float) i - (float) (i - 1)) / (float) (i - 1));
+            }
+            list.add(bpi);
         }
         return list;
     }
@@ -42,7 +46,7 @@ public class BPIServiceClientTest {
     public void getHistory_oneResponse() {
         BPIService service = mock(BPIService.class);
         when(service.getHistory()).thenReturn(Observable.from(new HistoryDto[] {
-                newHistory(2)
+                newHistory(3)
         }));
         BPIServiceClient client = new BPIServiceClient(service);
 
@@ -50,7 +54,7 @@ public class BPIServiceClientTest {
         client.getHistory().subscribe(subscriber);
 
         List<List<BPI>> expectedResults = new ArrayList<>();
-        expectedResults.add(newBPIList(2));
+        expectedResults.add(newBPIList(3));
         subscriber.assertReceivedOnNext(expectedResults);
         subscriber.assertTerminalEvent();
         subscriber.assertNoErrors();

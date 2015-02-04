@@ -3,6 +3,7 @@ package com.romainpiel.bitcointracker.network;
 import com.romainpiel.bitcointracker.model.BPI;
 import com.romainpiel.bitcointracker.network.model.HistoryDto;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +24,9 @@ public class BPIServiceClient {
             @Override
             public Observable<List<BPI>> call(HistoryDto historyDto) {
                 return Observable.from(historyDto.getBpi().entrySet())
-                        .map(new Func1<Map.Entry<String, Double>, BPI>() {
+                        .map(new Func1<Map.Entry<Date, Double>, BPI>() {
                             @Override
-                            public BPI call(Map.Entry<String, Double> entry) {
+                            public BPI call(Map.Entry<Date, Double> entry) {
                                 return new BPI(entry.getKey(), entry.getValue());
                             }
                         })
@@ -38,7 +39,19 @@ public class BPIServiceClient {
                                 return bpi2;
                             }
                         })
-                        .toList();
+                        .filter(new Func1<BPI, Boolean>() {
+                            @Override
+                            public Boolean call(BPI bpi) {
+                                return bpi.getChange() != null;
+                            }
+                        })
+                        .toSortedList(new Func2<BPI, BPI, Integer>() {
+                            @Override
+                            public Integer call(BPI bpi, BPI bpi2) {
+                                // DESC order
+                                return - bpi.getDate().compareTo(bpi2.getDate());
+                            }
+                        });
             }
         });
     }

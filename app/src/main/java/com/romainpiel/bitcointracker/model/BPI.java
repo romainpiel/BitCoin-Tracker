@@ -1,17 +1,24 @@
 package com.romainpiel.bitcointracker.model;
 
+import java.util.Date;
+
 public class BPI {
 
-    private String date;
+    private Date date;
     private Double close;
     private Float change;
 
-    public BPI(String date, Double close) {
-        this.date = date;
-        this.close = close;
+    public BPI(Date date, Double close) {
+        this(date, close, null);
     }
 
-    public String getDate() {
+    public BPI(Date date, Double close, Float change) {
+        this.date = date;
+        this.close = close;
+        this.change = change;
+    }
+
+    public Date getDate() {
         return date;
     }
 

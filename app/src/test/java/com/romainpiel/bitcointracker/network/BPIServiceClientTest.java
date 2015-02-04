@@ -1,5 +1,6 @@
 package com.romainpiel.bitcointracker.network;
 
+import com.google.common.collect.Lists;
 import com.romainpiel.bitcointracker.model.BPI;
 import com.romainpiel.bitcointracker.network.model.HistoryDto;
 
@@ -7,7 +8,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -20,30 +24,24 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 public class BPIServiceClientTest {
 
-    private static HistoryDto newHistory(int max) {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-d");
+
+    private static Date newDate(int day) throws ParseException {
+        return dateFormat.parse(String.format("2015-02-%d", day));
+    }
+
+    private static HistoryDto newHistory(int max) throws ParseException {
         HistoryDto historyDto = new HistoryDto();
-        LinkedHashMap<String, Double> bpi = new LinkedHashMap<>();
+        LinkedHashMap<Date, Double> bpi = new LinkedHashMap<>();
         for (int i = 1; i <= max; i++) {
-            bpi.put(String.format("date %d", i), (double) i);
+            bpi.put(newDate(i), (double) i);
         }
         historyDto.setBpi(bpi);
         return historyDto;
     }
 
-    private static List<BPI> newBPIList(int max) {
-        List<BPI> list = new ArrayList<>();
-        for (int i = 1; i <= max; i++) {
-            BPI bpi = new BPI(String.format("date %d", i), (double) i);
-            if (i > 1) {
-                bpi.setChange(((float) i - (float) (i - 1)) / (float) (i - 1));
-            }
-            list.add(bpi);
-        }
-        return list;
-    }
-
     @Test
-    public void getHistory_oneResponse() {
+    public void getHistory_oneResponse() throws ParseException {
         BPIService service = mock(BPIService.class);
         when(service.getHistory()).thenReturn(Observable.from(new HistoryDto[] {
                 newHistory(3)
@@ -54,7 +52,10 @@ public class BPIServiceClientTest {
         client.getHistory().subscribe(subscriber);
 
         List<List<BPI>> expectedResults = new ArrayList<>();
-        expectedResults.add(newBPIList(3));
+        expectedResults.add(Lists.newArrayList(
+                new BPI(newDate(3), 3d, 1f/2f),
+                new BPI(newDate(2), 2d, 1f)
+        ));
         subscriber.assertReceivedOnNext(expectedResults);
         subscriber.assertTerminalEvent();
         subscriber.assertNoErrors();

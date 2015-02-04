@@ -9,15 +9,18 @@ import com.romainpiel.bitcointracker.R;
 import com.romainpiel.bitcointracker.model.BPI;
 import com.romainpiel.bitcointracker.view.holder.BPIViewHolder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
 
     private List<BPI> items;
+    private SimpleDateFormat simpleDateFormat;
 
     public HistoryAdapter() {
         this.items = new ArrayList<>();
+        this.simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     }
 
     public void setItems(List<BPI> items) {
@@ -28,7 +31,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
     @Override
     public BPIViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bpi, viewGroup, false);
-        return new BPIViewHolder(itemView);
+        return new BPIViewHolder(itemView, simpleDateFormat);
     }
 
     @Override

@@ -7,6 +7,8 @@ import android.widget.TextView;
 import com.romainpiel.bitcointracker.R;
 import com.romainpiel.bitcointracker.model.BPI;
 
+import java.text.SimpleDateFormat;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -21,13 +23,16 @@ public class BPIViewHolder extends RecyclerView.ViewHolder {
     @InjectView(R.id.change)
     TextView change;
 
-    public BPIViewHolder(View itemView) {
+    private SimpleDateFormat simpleDateFormat;
+
+    public BPIViewHolder(View itemView, SimpleDateFormat simpleDateFormat) {
         super(itemView);
+        this.simpleDateFormat = simpleDateFormat;
         ButterKnife.inject(this, itemView);
     }
 
     public void bind(BPI bpi) {
-        date.setText(bpi.getDate());
+        date.setText(simpleDateFormat.format(bpi.getDate()));
         close.setText(String.format("$%.2f", bpi.getClose()));
 
         String changeText = "";

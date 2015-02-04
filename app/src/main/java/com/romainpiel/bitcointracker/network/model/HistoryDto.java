@@ -2,19 +2,20 @@ package com.romainpiel.bitcointracker.network.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class HistoryDto {
 
     @JsonProperty
-    LinkedHashMap<String, Double> bpi;
+    LinkedHashMap<Date, Double> bpi;
 
-    public HashMap<String, Double> getBpi() {
+    public HashMap<Date, Double> getBpi() {
         return bpi;
     }
 
-    public void setBpi(LinkedHashMap<String, Double> bpi) {
+    public void setBpi(LinkedHashMap<Date, Double> bpi) {
         this.bpi = bpi;
     }
 }

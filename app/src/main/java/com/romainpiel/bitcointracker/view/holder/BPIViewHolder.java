@@ -1,6 +1,9 @@
 package com.romainpiel.bitcointracker.view.holder;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -26,18 +29,25 @@ public class BPIViewHolder extends RecyclerView.ViewHolder {
     TextView change;
 
     private SimpleDateFormat simpleDateFormat;
+    private boolean largeCloseTextSize;
 
     public BPIViewHolder(View itemView, SimpleDateFormat simpleDateFormat) {
         super(itemView);
-        this.simpleDateFormat = simpleDateFormat;
         ButterKnife.inject(this, itemView);
+        this.simpleDateFormat = simpleDateFormat;
+        this.largeCloseTextSize = close.getTextSize() >= itemView.getResources().getDimension(R.dimen.text_huge);
     }
 
     public void bind(BPI item) {
         if (date != null) {
             date.setText(simpleDateFormat.format(item.getDate()));
         }
-        close.setText(String.format("$%.2f", item.getClose()));
+        SpannableStringBuilder closeText = new SpannableStringBuilder(String.format("$%.2f", item.getClose()));
+        if (largeCloseTextSize) {
+            // if large text, the price looks better with a small $
+            closeText.setSpan(new RelativeSizeSpan(0.4f), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        close.setText(closeText);
 
         int changeTextColorRes = R.color.textColorSecondary;
         String changeText = "";

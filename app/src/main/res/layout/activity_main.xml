@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<fragment
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_fragment"
+    class="com.romainpiel.bitcointracker.fragment.HistoryListFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <fragment
-        android:id="@+id/main_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        class="com.romainpiel.bitcointracker.fragment.HistoryListFragment"/>
-
-</LinearLayout>
+    android:layout_height="match_parent" />

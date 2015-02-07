@@ -12,6 +12,14 @@ public class PriceDto {
     @JsonProperty
     HashMap<String, BPIDto> bpi;
 
+    public PriceDto() {
+    }
+
+    public PriceDto(TimeDto time, HashMap<String, BPIDto> bpi) {
+        this.time = time;
+        this.bpi = bpi;
+    }
+
     public TimeDto getTime() {
         return time;
     }

@@ -2,7 +2,10 @@ package com.romainpiel.bitcointracker.network;
 
 import com.google.common.collect.Lists;
 import com.romainpiel.bitcointracker.model.BPI;
+import com.romainpiel.bitcointracker.network.model.BPIDto;
 import com.romainpiel.bitcointracker.network.model.HistoryDto;
+import com.romainpiel.bitcointracker.network.model.PriceDto;
+import com.romainpiel.bitcointracker.network.model.TimeDto;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -30,6 +34,13 @@ public class BPIServiceClientTest {
         return dateFormat.parse(String.format("2015-02-%d", day));
     }
 
+    private static PriceDto newUSDPrice(Date lastUpdated, float rate) {
+        TimeDto timeDto = new TimeDto(lastUpdated);
+        HashMap<String, BPIDto> bpi = new HashMap<>();
+        bpi.put("USD", new BPIDto(rate));
+        return new PriceDto(timeDto, bpi);
+    }
+
     private static HistoryDto newHistory(int max) throws ParseException {
         HistoryDto historyDto = new HistoryDto();
         LinkedHashMap<Date, Float> bpi = new LinkedHashMap<>();
@@ -41,7 +52,29 @@ public class BPIServiceClientTest {
     }
 
     @Test
-    public void getHistory_oneResponse() throws ParseException {
+    public void getCurrentUSDPrice_oneNext() throws ParseException {
+        Date date = newDate(1);
+        float rate = 2.3456f;
+
+        BPIService service = mock(BPIService.class);
+        when(service.currentPrice()).thenReturn(Observable.from(new PriceDto[]{
+                newUSDPrice(date, rate)
+        }));
+        BPIServiceClient client = new BPIServiceClient(service);
+
+        TestSubscriber<BPI> subscriber = new TestSubscriber<>();
+        client.getCurrentUSDPrice().subscribe(subscriber);
+
+        List<BPI> expectedResults = Lists.newArrayList(
+                new BPI(date, rate)
+        );
+        subscriber.assertReceivedOnNext(expectedResults);
+        subscriber.assertTerminalEvent();
+        subscriber.assertNoErrors();
+    }
+
+    @Test
+    public void getHistory_oneNext() throws ParseException {
         BPIService service = mock(BPIService.class);
         when(service.getHistory()).thenReturn(Observable.from(new HistoryDto[] {
                 newHistory(3)

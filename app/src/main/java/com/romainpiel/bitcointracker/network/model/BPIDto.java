@@ -7,6 +7,13 @@ public class BPIDto {
     @JsonProperty("rate_float")
     Float rate;
 
+    public BPIDto() {
+    }
+
+    public BPIDto(Float rate) {
+        this.rate = rate;
+    }
+
     public Float getRate() {
         return rate;
     }

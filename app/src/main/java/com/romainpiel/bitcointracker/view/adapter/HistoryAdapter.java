@@ -17,8 +17,8 @@ import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<BPIViewHolder> {
 
-    private static final int TYPE_HEADER = 0;
-    private static final int TYPE_ITEM = 1;
+    public static final int TYPE_HEADER = 0;
+    public static final int TYPE_ITEM = 1;
 
     private State state;
     private SimpleDateFormat simpleDateFormat;

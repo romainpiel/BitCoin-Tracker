@@ -12,7 +12,6 @@ A simple BitCoin Tracker for Android with a regular polling to [CoinDesk API](ht
 - Jackson
 - Retrofit
 - OkHttp
-
 - Robolectric
 - Mockito
 - fest-android

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BitCoin Tracker</string>
+        <string name="request_error">Service unavailable,\nplease try again later</string>
 </resources>

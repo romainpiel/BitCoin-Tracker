@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.romainpiel.bitcointracker.R;
 import com.romainpiel.bitcointracker.model.BPI;
@@ -20,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.InjectViews;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -37,7 +41,15 @@ public class HistoryListFragment extends BaseFragment {
     @Inject
     BPIServiceClient bpiServiceClient;
 
-    private RecyclerView recyclerView;
+    @InjectView(R.id.emptyView)
+    public TextView emptyView;
+
+    @InjectView(R.id.recyclerView)
+    public RecyclerView recyclerView;
+
+    @InjectViews({R.id.progress, R.id.emptyView, R.id.recyclerView})
+    public List<View> triplet;
+
     private CompositeSubscription compositeSubscription;
     private Subscription pollingWorker;
     private HistoryAdapter adapter;
@@ -45,11 +57,12 @@ public class HistoryListFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_history_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_history_list, container, false);
+        ButterKnife.inject(this, view);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-        recyclerView.setAdapter(adapter);
-        return recyclerView;
+        return view;
     }
 
     @Override
@@ -65,6 +78,7 @@ public class HistoryListFragment extends BaseFragment {
             adapter = new HistoryAdapter(adapterState);
         }
         recyclerView.setAdapter(adapter);
+        updateRecyclerViewVisibility();
 
         if (savedInstanceState == null) {
             fetchHistory();
@@ -116,17 +130,16 @@ public class HistoryListFragment extends BaseFragment {
                 .subscribe(new Subscriber<BPI>() {
                     @Override
                     public void onCompleted() {
-                        Log.d("blah", "current complete");
+                        updateRecyclerViewVisibility();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("blah", "current error " + e.getMessage());
+                        updateRecyclerViewVisibility();
                     }
 
                     @Override
                     public void onNext(BPI bpi) {
-                        Log.d("blah", "current next ");
                         if (adapter.getItems().size() > 0) {
                             bpi.setChange(adapter.getItems().get(0));
                         }
@@ -138,23 +151,24 @@ public class HistoryListFragment extends BaseFragment {
     }
 
     private void fetchHistory() {
+        emptyView.setText(null);
         Subscription subscription = bpiServiceClient.getHistory()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<BPI>>() {
                     @Override
                     public void onCompleted() {
-                        Log.d("blah", "history complete");
+                        updateRecyclerViewVisibility();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("blah", "history error " + e.getMessage());
+                        emptyView.setText(R.string.request_error);
+                        updateRecyclerViewVisibility();
                     }
 
                     @Override
                     public void onNext(List<BPI> bpis) {
-                        Log.d("blah", String.valueOf(bpis.size()));
                         if (bpis.size() > 0 && adapter.getCurrent() != null) {
                             adapter.getCurrent().setChange(bpis.get(0));
                         }
@@ -163,5 +177,23 @@ public class HistoryListFragment extends BaseFragment {
                     }
                 });
         compositeSubscription.add(subscription);
+    }
+
+    private void updateRecyclerViewVisibility() {
+        if (adapter.getItemCount() > 0) {
+            showOnly(R.id.recyclerView);
+        } else {
+            if (TextUtils.isEmpty(emptyView.getText())) {
+                showOnly(R.id.progress);
+            } else {
+                showOnly(R.id.emptyView);
+            }
+        }
+    }
+
+    private void showOnly(int viewId) {
+        for (View view : triplet) {
+            view.setVisibility(view.getId() == viewId ? View.VISIBLE : View.GONE);
+        }
     }
 }
